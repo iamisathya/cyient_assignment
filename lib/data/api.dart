@@ -53,22 +53,13 @@ class APIManager {
     return _list;
   }
 
-  Future<List<User>> createPost(
-      String title, String body, int userId, PostCreateType createType) async {
-    List<User> _list = [];
+  Future<void> createPost(String title, String body, int userId) async {
     try {
       var url = Uri.parse(Endpoints.getPosts);
       await Future.delayed(const Duration(seconds: 2));
-      http.Response response;
-      if (createType == PostCreateType.CREATE) {
-        print("create");
-        response = await http.post(url,
-            body: jsonEncode({'title': title, 'body': body, 'userId': userId}));
-      } else {
-        print("update");
-        response = await http.patch(url,
-            body: jsonEncode({'title': title, 'body': body, 'userId': userId}));
-      }
+      http.Response response = await http.post(url,
+          body: jsonEncode({'title': title, 'body': body, 'userId': userId}));
+
       debugPrint(response.body.toString());
       var parsed = Post.fromMap(jsonDecode(response.body));
       if (parsed.id == null) {
@@ -82,6 +73,30 @@ class APIManager {
       // debugPrint(s.toString());
       debugPrint(e.toString());
     }
-    return _list;
+  }
+
+  Future<void> updatePost(String title, String body, int userId, int id) async {
+    print("${Endpoints.getPosts}/$id");
+    try {
+      var url = Uri.parse("${Endpoints.getPosts}/$id");
+      await Future.delayed(const Duration(seconds: 2));
+
+      http.Response response = await http.patch(url,
+          body: jsonEncode(
+              {'title': title, 'body': body, 'userId': userId, 'id': id}));
+
+      debugPrint(response.body.toString());
+      var parsed = Post.fromMap(jsonDecode(response.body));
+      if (parsed.id == null) {
+        throw UnhandledException(message: "Unhandled exception");
+      } else {
+        debugPrint(parsed.toString());
+      }
+    } on NetworkException catch (_) {
+      throw NetworkException(message: "Network error!");
+    } catch (e, s) {
+      // debugPrint(s.toString());
+      debugPrint(e.toString());
+    }
   }
 }

@@ -69,16 +69,23 @@ class CreatePostWidget extends StatelessWidget {
             maxLines: null,
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-              onPressed: () => {
-                    Provider.of<PostController>(context, listen: false)
-                        .createPost(
-                            context,
-                            _post != null
-                                ? PostCreateType.UPDATE
-                                : PostCreateType.CREATE)
-                  },
-              child: Text(_post != null ? "Update now" : "Create now"))
+          (controller.createPostState == CreatePostState.CREATING ||
+                  controller.updatePostState == UpdatePostState.UPDATING)
+              ? const CircularProgressIndicator()
+              : ElevatedButton(
+                  onPressed: () => {
+                        if (_post == null) // create
+                          {
+                            Provider.of<PostController>(context, listen: false)
+                                .createPost(context)
+                          }
+                        else // update
+                          {
+                            Provider.of<PostController>(context, listen: false)
+                                .updatePost(context, _post!.id!)
+                          }
+                      },
+                  child: Text(_post != null ? "Update now" : "Create now"))
         ],
       ),
     );

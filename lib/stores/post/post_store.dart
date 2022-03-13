@@ -10,12 +10,14 @@ class PostController extends ChangeNotifier {
       10; // max we will get only 100 post in https://jsonplaceholder.typicode.com/posts
   DataState _dataState = DataState.UNINITIALISED;
   UserState _userState = UserState.UNINITIALISED;
-  PostCreateType _createType = PostCreateType.CREATE;
+  final PostCreateType _createType = PostCreateType.CREATE;
   CreatePostState _createPostState = CreatePostState.UNINITIALISED;
+  UpdatePostState _updatePostState = UpdatePostState.UNINITIALISED;
   bool get _didLastLoad => _currentPageNumber >= _totalPages;
   DataState get dataState => _dataState;
   UserState get userState => _userState;
   CreatePostState get createPostState => _createPostState;
+  UpdatePostState get updatePostState => _updatePostState;
   List<Post> _dataList = [];
   final List<Post> _allDataList = [];
   final List<User> _allUserList = [];
@@ -84,18 +86,34 @@ class PostController extends ChangeNotifier {
     notifyListeners();
   }
 
-  createPost(BuildContext context, PostCreateType createType) async {
+  createPost(BuildContext context) async {
     _createPostState = CreatePostState.CREATING;
     notifyListeners();
     try {
-      List<User> list = await APIManager().createPost(
-          titleController.text, bodyController.text, selectedUser!.id!, createType);
-      _allUserList.addAll(list);
-      _userState = UserState.FETCHED;
+      await APIManager().createPost(titleController.text, bodyController.text,
+          selectedUser!.id!);
+
+      _createPostState = CreatePostState.CREATED;
       notifyListeners();
       Navigator.pop(context);
     } catch (e) {
-      _userState = UserState.ERROR;
+      _createPostState = CreatePostState.ERROR;
+      notifyListeners();
+    }
+  }
+
+  updatePost(BuildContext context, int postId) async {
+    _updatePostState = UpdatePostState.UPDATING;
+    notifyListeners();
+    try {
+      await APIManager().updatePost(titleController.text, bodyController.text,
+          selectedUser!.id!, postId);
+
+      _updatePostState = UpdatePostState.UPDATED;
+      notifyListeners();
+      Navigator.pop(context);
+    } catch (e) {
+      _updatePostState = UpdatePostState.ERROR;
       notifyListeners();
     }
   }
@@ -106,8 +124,8 @@ class PostController extends ChangeNotifier {
   }
 
   void fillCreatePostField(Post post) {
-   titleController.text = post.title!;
-   bodyController.text = post.body!;
-   selectedUser = userList.firstWhere((element) => element.id == post.userId);
+    titleController.text = post.title!;
+    bodyController.text = post.body!;
+    selectedUser = userList.firstWhere((element) => element.id == post.userId);
   }
 }
