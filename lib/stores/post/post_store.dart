@@ -10,6 +10,7 @@ class PostController extends ChangeNotifier {
       10; // max we will get only 100 post in https://jsonplaceholder.typicode.com/posts
   DataState _dataState = DataState.UNINITIALISED;
   UserState _userState = UserState.UNINITIALISED;
+  PostCreateType _createType = PostCreateType.CREATE;
   CreatePostState _createPostState = CreatePostState.UNINITIALISED;
   bool get _didLastLoad => _currentPageNumber >= _totalPages;
   DataState get dataState => _dataState;
@@ -83,13 +84,14 @@ class PostController extends ChangeNotifier {
     notifyListeners();
   }
 
-  createPost(BuildContext context) async {
-    _createPostState = CreatePostState.CREATING;    
+  createPost(BuildContext context, PostCreateType createType) async {
+    _createPostState = CreatePostState.CREATING;
     notifyListeners();
     try {
-      List<User> list = await APIManager().createPost(titleController.text, bodyController.text, selectedUser!.id!);
+      List<User> list = await APIManager().createPost(
+          titleController.text, bodyController.text, selectedUser!.id!, createType);
       _allUserList.addAll(list);
-      _userState = UserState.FETCHED;      
+      _userState = UserState.FETCHED;
       notifyListeners();
       Navigator.pop(context);
     } catch (e) {
@@ -101,5 +103,11 @@ class PostController extends ChangeNotifier {
   void showInSnackBar(String value) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     _scaffoldKey.currentState?.showSnackBar(SnackBar(content: Text(value)));
-}
+  }
+
+  void fillCreatePostField(Post post) {
+   titleController.text = post.title!;
+   bodyController.text = post.body!;
+   selectedUser = userList.firstWhere((element) => element.id == post.userId);
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:cyient_assignment/models/post/post.dart';
+import 'package:cyient_assignment/ui/post/create_post/create_post.dart';
 import 'package:flutter/material.dart';
 
 class PostItem extends StatelessWidget {
@@ -25,6 +26,17 @@ class PostItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreatePostWidget(post: _data[_index]),
+                          fullscreenDialog: true),
+                    );
+                  },
+                  icon: const Icon(Icons.edit),
+                  label: const Text("Edit")),
               Row(
                 children: [
                   const Text("User Name: ",

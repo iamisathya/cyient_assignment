@@ -44,7 +44,7 @@ class PostScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CreatePostWidget(),
+                builder: (context) => CreatePostWidget(post: null),
                 fullscreenDialog: true),
           );
         },

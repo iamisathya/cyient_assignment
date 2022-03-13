@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cyient_assignment/data/enum.dart';
 import 'package:cyient_assignment/data/exceptions/network_exceptions.dart';
 import 'package:cyient_assignment/models/user/user.dart';
 import 'package:flutter/material.dart';
@@ -52,15 +53,25 @@ class APIManager {
     return _list;
   }
 
-  Future<List<User>> createPost(String title, String body, int userId) async {
+  Future<List<User>> createPost(
+      String title, String body, int userId, PostCreateType createType) async {
     List<User> _list = [];
     try {
       var url = Uri.parse(Endpoints.getPosts);
       await Future.delayed(const Duration(seconds: 2));
-      var response = await http.post(url, body: jsonEncode({'title': title, 'body': body, 'userId': userId}));
+      http.Response response;
+      if (createType == PostCreateType.CREATE) {
+        print("create");
+        response = await http.post(url,
+            body: jsonEncode({'title': title, 'body': body, 'userId': userId}));
+      } else {
+        print("update");
+        response = await http.patch(url,
+            body: jsonEncode({'title': title, 'body': body, 'userId': userId}));
+      }
       debugPrint(response.body.toString());
       var parsed = Post.fromMap(jsonDecode(response.body));
-      if(parsed.id == null){
+      if (parsed.id == null) {
         throw UnhandledException(message: "Unhandled exception");
       } else {
         debugPrint(parsed.toString());

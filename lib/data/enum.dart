@@ -30,3 +30,8 @@ enum UpdatePostState {
   ERROR
 }
 
+enum PostCreateType {
+  CREATE,
+  UPDATE
+}
+

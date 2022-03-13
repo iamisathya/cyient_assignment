@@ -1,16 +1,21 @@
 import 'package:cyient_assignment/data/enum.dart';
+import 'package:cyient_assignment/models/post/post.dart';
 import 'package:cyient_assignment/stores/post/post_store.dart';
 import 'package:cyient_assignment/ui/users/users.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CreatePostWidget extends StatelessWidget {
-  const CreatePostWidget({Key? key}) : super(key: key);  
+  final Post? _post;
+  const CreatePostWidget({Key? key, required Post? post})
+      : _post = post,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Create Post")),
+        appBar:
+            AppBar(title: Text(_post != null ? "Update Post" : "Create Post")),
         body: SafeArea(child: _createPostWidget()));
   }
 
@@ -28,6 +33,9 @@ class CreatePostWidget extends StatelessWidget {
           case UserState.FETCHING:
             return const CircularProgressIndicator();
           case UserState.FETCHED:
+            if (_post != null) {
+              controller.fillCreatePostField(_post!);
+            }
             return _scrollNotificationWidget(controller, context);
           case UserState.ERROR:
             return const Center(child: Text("Error!"));
@@ -64,9 +72,13 @@ class CreatePostWidget extends StatelessWidget {
           ElevatedButton(
               onPressed: () => {
                     Provider.of<PostController>(context, listen: false)
-                        .createPost(context)
+                        .createPost(
+                            context,
+                            _post != null
+                                ? PostCreateType.UPDATE
+                                : PostCreateType.CREATE)
                   },
-              child: const Text("Create now"))
+              child: Text(_post != null ? "Update now" : "Create now"))
         ],
       ),
     );
