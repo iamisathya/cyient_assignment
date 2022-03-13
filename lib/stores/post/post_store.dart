@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cyient_assignment/data/api.dart';
 import 'package:cyient_assignment/data/enum.dart';
 import 'package:cyient_assignment/models/post/post.dart';
@@ -10,7 +12,6 @@ class PostController extends ChangeNotifier {
       10; // max we will get only 100 post in https://jsonplaceholder.typicode.com/posts
   DataState _dataState = DataState.UNINITIALISED;
   UserState _userState = UserState.UNINITIALISED;
-  final PostCreateType _createType = PostCreateType.CREATE;
   CreatePostState _createPostState = CreatePostState.UNINITIALISED;
   UpdatePostState _updatePostState = UpdatePostState.UNINITIALISED;
   bool get _didLastLoad => _currentPageNumber >= _totalPages;

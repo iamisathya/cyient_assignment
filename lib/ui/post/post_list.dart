@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cyient_assignment/data/enum.dart';
 import 'package:cyient_assignment/models/post/post.dart';
 import 'package:cyient_assignment/stores/post/post_store.dart';

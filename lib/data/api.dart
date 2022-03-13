@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cyient_assignment/data/enum.dart';
 import 'package:cyient_assignment/data/exceptions/network_exceptions.dart';
 import 'package:cyient_assignment/models/user/user.dart';
 import 'package:flutter/material.dart';
@@ -69,14 +68,13 @@ class APIManager {
       }
     } on NetworkException catch (_) {
       throw NetworkException(message: "Network error!");
-    } catch (e, s) {
+    } catch (e, _) {
       // debugPrint(s.toString());
       debugPrint(e.toString());
     }
   }
 
   Future<void> updatePost(String title, String body, int userId, int id) async {
-    print("${Endpoints.getPosts}/$id");
     try {
       var url = Uri.parse("${Endpoints.getPosts}/$id");
       await Future.delayed(const Duration(seconds: 2));
@@ -94,7 +92,7 @@ class APIManager {
       }
     } on NetworkException catch (_) {
       throw NetworkException(message: "Network error!");
-    } catch (e, s) {
+    } catch (e, _) {
       // debugPrint(s.toString());
       debugPrint(e.toString());
     }
