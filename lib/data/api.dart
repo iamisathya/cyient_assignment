@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cyient_assignment/data/exceptions/network_exceptions.dart';
+import 'package:cyient_assignment/models/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,6 +30,45 @@ class APIManager {
     } on NetworkException catch (_) {
       throw NetworkException(message: "Network error!");
     } catch (e) {
+      debugPrint(e.toString());
+    }
+    return _list;
+  }
+
+  Future<List<User>> fetchUsers() async {
+    List<User> _list = [];
+    try {
+      var url = Uri.parse(Endpoints.getUsers);
+      var response = await http.get(url);
+
+      for (var item in jsonDecode(response.body) as List) {
+        _list.add(User.fromMap(item));
+      }
+    } on NetworkException catch (_) {
+      throw NetworkException(message: "Network error!");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return _list;
+  }
+
+  Future<List<User>> createPost(String title, String body, int userId) async {
+    List<User> _list = [];
+    try {
+      var url = Uri.parse(Endpoints.getPosts);
+      await Future.delayed(const Duration(seconds: 2));
+      var response = await http.post(url, body: jsonEncode({'title': title, 'body': body, 'userId': userId}));
+      debugPrint(response.body.toString());
+      var parsed = Post.fromMap(jsonDecode(response.body));
+      if(parsed.id == null){
+        throw UnhandledException(message: "Unhandled exception");
+      } else {
+        debugPrint(parsed.toString());
+      }
+    } on NetworkException catch (_) {
+      throw NetworkException(message: "Network error!");
+    } catch (e, s) {
+      // debugPrint(s.toString());
       debugPrint(e.toString());
     }
     return _list;

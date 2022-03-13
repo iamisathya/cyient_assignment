@@ -1,6 +1,7 @@
 import 'package:cyient_assignment/data/api.dart';
 import 'package:cyient_assignment/data/enum.dart';
 import 'package:cyient_assignment/models/post/post.dart';
+import 'package:cyient_assignment/models/user/user.dart';
 import 'package:flutter/material.dart';
 
 class PostController extends ChangeNotifier {
@@ -8,14 +9,27 @@ class PostController extends ChangeNotifier {
   final int _totalPages =
       10; // max we will get only 100 post in https://jsonplaceholder.typicode.com/posts
   DataState _dataState = DataState.UNINITIALISED;
+  UserState _userState = UserState.UNINITIALISED;
+  CreatePostState _createPostState = CreatePostState.UNINITIALISED;
   bool get _didLastLoad => _currentPageNumber >= _totalPages;
   DataState get dataState => _dataState;
+  UserState get userState => _userState;
+  CreatePostState get createPostState => _createPostState;
   List<Post> _dataList = [];
   final List<Post> _allDataList = [];
+  final List<User> _allUserList = [];
   List<Post> get dataList => _dataList;
+  List<User> get userList => _allUserList;
   List<Post> get getAllDataList => _allDataList;
+  User? selectedUser;
 
-  fetchData({bool isRefresh = false}) async {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _bodyController = TextEditingController();
+
+  TextEditingController get titleController => _titleController;
+  TextEditingController get bodyController => _bodyController;
+
+  fetchData() async {
     _dataState = (_dataState == DataState.UNINITIALISED)
         ? DataState.INITIAL_FETCHING
         : DataState.MORE_FETCHING;
@@ -48,4 +62,44 @@ class PostController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  fetchUsers() async {
+    _userState = UserState.FETCHING;
+    _allUserList.clear();
+    notifyListeners();
+    try {
+      List<User> list = await APIManager().fetchUsers();
+      _allUserList.addAll(list);
+      _userState = UserState.FETCHED;
+      notifyListeners();
+    } catch (e) {
+      _userState = UserState.ERROR;
+      notifyListeners();
+    }
+  }
+
+  updateUser(User user) async {
+    selectedUser = user;
+    notifyListeners();
+  }
+
+  createPost(BuildContext context) async {
+    _createPostState = CreatePostState.CREATING;    
+    notifyListeners();
+    try {
+      List<User> list = await APIManager().createPost(titleController.text, bodyController.text, selectedUser!.id!);
+      _allUserList.addAll(list);
+      _userState = UserState.FETCHED;      
+      notifyListeners();
+      Navigator.pop(context);
+    } catch (e) {
+      _userState = UserState.ERROR;
+      notifyListeners();
+    }
+  }
+
+  void showInSnackBar(String value) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    _scaffoldKey.currentState?.showSnackBar(SnackBar(content: Text(value)));
+}
 }

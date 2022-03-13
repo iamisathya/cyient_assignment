@@ -4,3 +4,12 @@ class NetworkException implements Exception {
 
   NetworkException({this.message, this.statusCode});
 }
+
+class UnhandledException implements NetworkException {
+  @override
+  String? message;
+  @override
+  int? statusCode;
+
+  UnhandledException({this.message, this.statusCode});
+}
