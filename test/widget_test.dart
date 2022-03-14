@@ -5,26 +5,27 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:cyient_assignment/ui/post/create_post/create_post.dart';
+import 'package:cyient_assignment/ui/post/post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cyient_assignment/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Listview with 10 items', (WidgetTester tester) async {
+    await tester.pumpWidget(PostScreen());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Create the Finders.
+    expect(find.byKey(const Key("post_list_key")), findsOneWidget);    
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('Testing create post widget', (WidgetTester tester) async {
+    await tester.pumpWidget(const CreatePostWidget(post: null));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Create the Finders.
+    expect(find.byKey(const Key("title_field_key")), findsOneWidget);    
+    expect(find.byKey(const Key("body_field_key")), findsOneWidget);    
+    expect(find.byKey(const Key("create_button_key")), findsOneWidget);  
   });
 }

@@ -36,6 +36,7 @@ class PostListWidget extends StatelessWidget {
               child: NotificationListener<ScrollNotification>(
                 onNotification: (onNoti) => _scrollNotification(onNoti, context),
                 child: ListView.builder(
+                  key: const Key("post_list_key"),
                   itemCount: _data.length,
                   itemBuilder: (context, index) {
                     return PostItem(data: _data, index: index);

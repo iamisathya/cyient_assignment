@@ -53,6 +53,7 @@ class CreatePostWidget extends StatelessWidget {
           UserListWidget(),
           const SizedBox(height: 20),
           TextField(
+            key: const Key("title_field_key"),
               controller: controller.titleController,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -60,6 +61,7 @@ class CreatePostWidget extends StatelessWidget {
                   hintText: "Enter title")),
           const SizedBox(height: 20),
           TextField(
+            key: const Key("body_field_key"),
             controller: controller.bodyController,
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -73,6 +75,7 @@ class CreatePostWidget extends StatelessWidget {
                   controller.updatePostState == UpdatePostState.UPDATING)
               ? const CircularProgressIndicator()
               : ElevatedButton(
+                key: const Key("create_button_key"),
                   onPressed: () => {
                         if (_post == null) // create
                           {
