@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 class PostController extends ChangeNotifier {
   int _currentPageNumber = 0;
+  final int _currentUserId = 1;
   final int _totalPages =
       10; // max we will get only 100 post in https://jsonplaceholder.typicode.com/posts
   DataState _dataState = DataState.UNINITIALISED;
@@ -27,6 +28,7 @@ class PostController extends ChangeNotifier {
   List<Post> get dataList => _dataList;
   List<User> get userList => _allUserList;
   List<Post> get getAllDataList => _allDataList;
+  int get currentUserId => _currentUserId;
   User? selectedUser;
 
   final TextEditingController _titleController = TextEditingController();
@@ -35,7 +37,7 @@ class PostController extends ChangeNotifier {
   TextEditingController get titleController => _titleController;
   TextEditingController get bodyController => _bodyController;
 
-  fetchData() async {
+  fetchData(BuildContext context) async {
     _dataState = (_dataState == DataState.UNINITIALISED)
         ? DataState.INITIAL_FETCHING
         : DataState.MORE_FETCHING;
@@ -53,6 +55,7 @@ class PostController extends ChangeNotifier {
           _dataState = DataState.FETCHED;
           _currentPageNumber += 1;
         } else {
+          showAlertDialog(context);
           List<Post> list = await APIManager().fetchData(_currentPageNumber);
           List<User> usersList = await APIManager().fetchUsers();
           final res = processData(list, usersList);
@@ -139,5 +142,33 @@ class PostController extends ChangeNotifier {
   void deletePost(int postId) {
     _dataList.removeAt(postId);
     notifyListeners();
+  }
+
+
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: const Text("OK, Go ahead!"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("You're user id $currentUserId"),
+      content: Text("This app believes your user id is $currentUserId."),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

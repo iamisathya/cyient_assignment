@@ -18,6 +18,7 @@ class PostItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int currentUserId = Provider.of<PostController>(context, listen: false).currentUserId;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -49,6 +50,7 @@ class PostItem extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: Divider(height: 1),
               ),
+              if(currentUserId == _data[_index].userId)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

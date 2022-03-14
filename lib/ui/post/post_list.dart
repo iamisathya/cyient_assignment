@@ -19,10 +19,10 @@ class PostListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     _dataState = Provider.of<PostController>(context, listen: false).dataState;
     _buildContext = context;
-    return SafeArea(child: _scrollNotificationWidget());
+    return SafeArea(child: _scrollNotificationWidget(context));
   }
 
-  Widget _scrollNotificationWidget() {
+  Widget _scrollNotificationWidget(BuildContext context) {
     return Stack(
       children: [
         if (_dataState == DataState.INITIAL_FETCHING) // showing progress for initial fetching
@@ -34,7 +34,7 @@ class PostListWidget extends StatelessWidget {
           children: [
             Expanded(
               child: NotificationListener<ScrollNotification>(
-                onNotification: _scrollNotification,
+                onNotification: (onNoti) => _scrollNotification(onNoti, context),
                 child: ListView.builder(
                   itemCount: _data.length,
                   itemBuilder: (context, index) {
@@ -61,11 +61,11 @@ class PostListWidget extends StatelessWidget {
     );
   }
 
-  bool _scrollNotification(ScrollNotification scrollInfo) {
+  bool _scrollNotification(ScrollNotification scrollInfo, BuildContext context) {
     if (!_isLoading &&
         scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
       _isLoading = true;
-      Provider.of<PostController>(_buildContext, listen: false).fetchData();
+      Provider.of<PostController>(_buildContext, listen: false).fetchData(context);
     }
     return true;
   }

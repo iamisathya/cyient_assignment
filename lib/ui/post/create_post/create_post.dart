@@ -29,9 +29,9 @@ class CreatePostWidget extends StatelessWidget {
             Future(() {
               controller.fetchUsers();
             });
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           case UserState.FETCHING:
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           case UserState.FETCHED:
             if (_post != null) {
               controller.fillCreatePostField(_post!);

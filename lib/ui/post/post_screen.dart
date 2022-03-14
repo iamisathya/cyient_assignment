@@ -12,8 +12,9 @@ class PostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // showAlertDialog(context);
     return Scaffold(
-       key: _scaffoldKey,
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text("Cyient Assignment"),
       ),
@@ -25,7 +26,7 @@ class PostScreen extends StatelessWidget {
             switch (controller.dataState) {
               case DataState.UNINITIALISED:
                 Future(() {
-                  controller.fetchData();
+                  controller.fetchData(context);
                 });
                 return PostListWidget(controller.dataList, false);
               case DataState.INITIAL_FETCHING:
@@ -39,7 +40,7 @@ class PostScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.plus_one),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.push(
             context,
