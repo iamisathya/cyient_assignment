@@ -129,4 +129,9 @@ class PostController extends ChangeNotifier {
     bodyController.text = post.body!;
     selectedUser = userList.firstWhere((element) => element.id == post.userId);
   }
+
+  void deletePost(int postId) {
+    _dataList.removeAt(postId);
+    notifyListeners();
+  }
 }
