@@ -35,7 +35,7 @@ class PostItem extends StatelessWidget {
                     const Text("User Name: ",
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold)),
-                    Text(_data[_index].id!.toString(),
+                    Text(_data[_index].userName!.toString(),
                         style: const TextStyle(fontSize: 15)),
                   ],
                 ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cyient_assignment/config/functions.dart';
 import 'package:cyient_assignment/data/exceptions/network_exceptions.dart';
 import 'package:cyient_assignment/models/user/user.dart';
 import 'package:flutter/material.dart';
@@ -17,14 +18,23 @@ class APIManager {
     return _shared;
   }
 
+  void handleError(e) {}
+
   Future fetchData(int currentPage) async {
     List<Post> _list = [];
     try {
       var url = Uri.parse(Endpoints.getPosts);
       var response = await http.get(url);
 
+      var getUsersUrl = Uri.parse(Endpoints.getUsers);
+      var getUsersResponse = await http.get(getUsersUrl);
       await Future.delayed(const Duration(seconds: 2));
-      for (var item in jsonDecode(response.body) as List) {
+      // merging user post with user name
+      var res = processData([
+        jsonDecode(response.body) as List,
+        jsonDecode(getUsersResponse.body) as List
+      ]);
+      for (var item in res) {
         _list.add(Post.fromMap(item));
       }
     } on NetworkException catch (_) {
