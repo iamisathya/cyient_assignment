@@ -39,7 +39,7 @@ class PostScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.file_copy),
+        child: const Icon(Icons.plus_one),
         onPressed: () {
           Navigator.push(
             context,

@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+
+import 'package:cyient_assignment/config/functions.dart';
 import 'package:cyient_assignment/data/api.dart';
 import 'package:cyient_assignment/data/enum.dart';
 import 'package:cyient_assignment/models/post/post.dart';
@@ -52,8 +54,11 @@ class PostController extends ChangeNotifier {
           _currentPageNumber += 1;
         } else {
           List<Post> list = await APIManager().fetchData(_currentPageNumber);
+          List<User> usersList = await APIManager().fetchUsers();
+          final res = processData(list, usersList);
+          _allUserList.addAll(usersList);
           _allDataList.clear();
-          _allDataList.addAll(list);
+          _allDataList.addAll(res);
           _dataList +=
               _allDataList.skip(_currentPageNumber * 10).take(10).toList();
           _dataState = DataState.FETCHED;
@@ -61,7 +66,8 @@ class PostController extends ChangeNotifier {
         }
       }
       notifyListeners();
-    } catch (e) {
+    } catch (e, s) {
+      debugPrint(s.toString());
       _dataState = DataState.ERROR;
       notifyListeners();
     }
@@ -91,8 +97,8 @@ class PostController extends ChangeNotifier {
     _createPostState = CreatePostState.CREATING;
     notifyListeners();
     try {
-      await APIManager().createPost(titleController.text, bodyController.text,
-          selectedUser!.id!);
+      await APIManager().createPost(
+          titleController.text, bodyController.text, selectedUser!.id!);
 
       _createPostState = CreatePostState.CREATED;
       notifyListeners();
@@ -107,8 +113,8 @@ class PostController extends ChangeNotifier {
     _updatePostState = UpdatePostState.UPDATING;
     notifyListeners();
     try {
-      await APIManager().updatePost(titleController.text, bodyController.text,
-          selectedUser!.id!, postId);
+      await APIManager().updatePost(
+          titleController.text, bodyController.text, selectedUser!.id!, postId);
 
       _updatePostState = UpdatePostState.UPDATED;
       notifyListeners();
